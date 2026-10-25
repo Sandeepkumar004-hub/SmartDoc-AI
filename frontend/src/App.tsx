@@ -9,12 +9,6 @@ type SearchResult = {
   score: number;
 };
 
-type UploadResponse = {
-  filename: string;
-  page_count: number;
-  chunk_count: number;
-  message: string;
-};
 
 type SearchResponse = {
   query: string;
@@ -23,7 +17,9 @@ type SearchResponse = {
   results: SearchResult[];
 };
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+).replace(/\/$/, "");
 
 function App() {
   const [file, setFile] = useState<File | null>(null);
