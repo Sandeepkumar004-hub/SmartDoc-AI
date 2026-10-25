@@ -22,6 +22,14 @@ The goal is to explore practical document retrieval techniques used in Retrieval
 - **Interactive frontend:** React and TypeScript interface for document upload and search.
 - **Automated tests:** Tests for API behavior, keyword retrieval, semantic retrieval, hybrid search, and reranking.
 
+## Application Preview
+
+SmartDoc AI provides a simple interface for uploading PDF documents and searching their contents using hybrid retrieval and cross-encoder reranking.
+
+![SmartDoc AI application preview](docs/screenshots/smartdoc-search.png)
+
+
+
 ## Architecture
 
 The retrieval pipeline follows these stages:
