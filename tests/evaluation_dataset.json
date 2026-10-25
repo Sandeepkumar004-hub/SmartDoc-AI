@@ -1,0 +1,23 @@
+
+[
+  {
+    "query": "Which technologies are used to build full-stack web applications?",
+    "relevant_chunk_ids": [1]
+  },
+  {
+    "query": "How can sales data and business performance be analyzed?",
+    "relevant_chunk_ids": [2]
+  },
+  {
+    "query": "What helps researchers study earthquakes and ground motion?",
+    "relevant_chunk_ids": [3]
+  },
+  {
+    "query": "What is useful for analyzing sales?",
+    "relevant_chunk_ids": [2]
+  },
+  {
+    "query": "Which technologies are used for web development?",
+    "relevant_chunk_ids": [1]
+  }
+]

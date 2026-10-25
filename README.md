@@ -1,146 +1,168 @@
 # SmartDoc AI — Hybrid RAG with Reranking
 
-A full-stack AI-powered PDF search application that combines keyword retrieval, semantic search, hybrid ranking, and cross-encoder reranking to find relevant passages in documents.
-
-**Built with:** Python · FastAPI · React · TypeScript · Sentence Transformers · BM25
+A full-stack AI-powered PDF search application that combines keyword retrieval, semantic search, Reciprocal Rank Fusion (RRF), and cross-encoder reranking to retrieve relevant information from documents.
 
 ## Overview
 
-SmartDoc AI lets users upload a PDF and search its contents through a web interface. It extracts document text, splits it into chunks, retrieves candidates using keyword and semantic search, combines their rankings using Reciprocal Rank Fusion (RRF), and reranks the candidates using a cross-encoder model.
+SmartDoc AI allows users to upload PDF documents and search their contents using natural-language queries. Instead of relying on keyword matching alone, it combines lexical and semantic retrieval to improve the relevance of search results.
 
-The goal is to explore practical document retrieval techniques used in Retrieval-Augmented Generation (RAG) systems.
+The backend extracts text from PDFs, splits it into manageable chunks, retrieves candidate chunks through BM25 and semantic similarity, combines the rankings using Reciprocal Rank Fusion, and reranks the candidates with a cross-encoder.
+
+The frontend provides a simple interface for uploading PDFs and viewing ranked results with page numbers and relevance scores.
 
 ## Features
 
-- **PDF text extraction:** Extract text while preserving page numbers.
-- **Text chunking:** Split extracted text into overlapping chunks.
-- **BM25 keyword search:** Retrieve passages based on matching terms.
-- **Semantic search:** Represent text as embeddings using Sentence Transformers.
-- **Hybrid retrieval:** Combine keyword and semantic rankings with Reciprocal Rank Fusion.
-- **Cross-encoder reranking:** Reorder retrieved passages based on query-document relevance.
-- **REST API:** Upload PDFs and search indexed content through FastAPI.
-- **Interactive frontend:** React and TypeScript interface for document upload and search.
-- **Automated tests:** Tests for API behavior, keyword retrieval, semantic retrieval, hybrid search, and reranking.
+- **PDF Upload:** Upload PDF documents through a web interface.
+- **Text Extraction:** Extract text while preserving page numbers.
+- **Text Chunking:** Split extracted text into overlapping chunks.
+- **Keyword Search:** Retrieve relevant passages using BM25.
+- **Semantic Search:** Find passages using sentence embeddings and cosine similarity.
+- **Hybrid Retrieval:** Combine keyword and semantic rankings using Reciprocal Rank Fusion.
+- **Cross-Encoder Reranking:** Rerank candidate passages based on query-document relevance.
+- **REST API:** Expose document upload and search functionality through FastAPI.
+- **Interactive Frontend:** Search documents through a React and TypeScript interface.
+- **Automated Testing:** Validate retrieval, API behavior, reranking, and edge cases.
+- **Retrieval Evaluation:** Measure search quality using Recall@K and Mean Reciprocal Rank (MRR).
 
 ## Application Preview
 
-SmartDoc AI provides a simple interface for uploading PDF documents and searching their contents using hybrid retrieval and cross-encoder reranking.
+SmartDoc AI provides a web interface for uploading PDFs and searching their contents.
 
 ![SmartDoc AI application preview](docs/screenshots/smartdoc-search.png)
 
-
-
 ## Architecture
 
-The retrieval pipeline follows these stages:
+The application follows this retrieval pipeline:
 
-1. The user uploads a PDF through the frontend.
-2. FastAPI validates the upload and extracts text using PyMuPDF.
-3. The extracted text is split into overlapping chunks.
-4. BM25 retrieves keyword-based candidates.
-5. Sentence Transformers embeddings support semantic retrieval.
-6. Reciprocal Rank Fusion combines the two rankings.
-7. A cross-encoder reranks the candidate passages.
-8. The API returns ranked results with chunk and page metadata.
+1. User uploads a PDF.
+2. FastAPI validates the file.
+3. PyMuPDF extracts text and page numbers.
+4. The chunker creates overlapping text chunks.
+5. BM25 performs keyword retrieval.
+6. Sentence Transformers generates embeddings for semantic retrieval.
+7. Reciprocal Rank Fusion combines the retrieval rankings.
+8. A cross-encoder reranks the candidate chunks.
+9. The API returns ranked results to the frontend.
 
-### Architecture Diagram
+For the architecture diagram, see [docs/architecture.md](docs/architecture.md).
 
-See the [detailed architecture documentation](docs/architecture.md) for the pipeline and component descriptions.
-
-## Technology Stack
+## Tech Stack
 
 | Component | Technology |
 |---|---|
-| Frontend | React, TypeScript, Vite, CSS |
-| Backend API | Python, FastAPI, Uvicorn |
-| PDF processing | PyMuPDF |
-| Keyword retrieval | BM25 via `rank-bm25` |
-| Semantic retrieval | Sentence Transformers |
-| Hybrid ranking | Reciprocal Rank Fusion |
-| Reranking | Cross-Encoder |
-| Numerical operations | NumPy |
-| Testing | Pytest, HTTPX |
-| Version control | Git, GitHub |
+| Frontend | React, TypeScript, Vite |
+| Backend | Python, FastAPI |
+| PDF Processing | PyMuPDF |
+| Keyword Retrieval | BM25, rank-bm25 |
+| Semantic Retrieval | Sentence Transformers |
+| Embeddings Model | all-MiniLM-L6-v2 |
+| Reranking Model | ms-marco-MiniLM-L-6-v2 |
+| Ranking Fusion | Reciprocal Rank Fusion (RRF) |
+| Numerical Computing | NumPy |
+| Testing | pytest, HTTPX |
+| Version Control | Git and GitHub |
 
 ## Project Structure
 
 ```text
 SmartDoc-AI/
 ├── backend/
+│   ├── __init__.py
 │   ├── main.py
 │   ├── pdf_processor.py
 │   ├── chunker.py
 │   ├── keyword_search.py
 │   ├── semantic_search.py
 │   ├── hybrid_search.py
-│   └── reranker.py
+│   ├── reranker.py
+│   └── evaluate_retrieval.py
 ├── frontend/
 │   ├── src/
+│   │   ├── App.tsx
+│   │   ├── App.css
+│   │   └── index.css
 │   ├── package.json
 │   └── ...
+├── docs/
+│   ├── architecture.md
+│   └── screenshots/
+│       └── smartdoc-search.png
+├── sample_data/
 ├── tests/
 │   ├── test_api.py
 │   ├── test_keyword_search.py
 │   ├── test_semantic_search.py
 │   ├── test_hybrid_search.py
-│   └── test_reranker.py
-├── docs/
-│   └── architecture.md
-├── sample_data/
+│   ├── test_reranker.py
+│   └── evaluation_dataset.json
 ├── .gitignore
 └── README.md
 ```
 
-## Prerequisites
+## Getting Started
+
+### Prerequisites
 
 Install the following before running the application:
 
-- Python 3.12 recommended
+- Python 3.12
 - Node.js and npm
 - Git
-- Internet connection for the initial download of the machine-learning models
 
-## Getting Started
+Python 3.12 is recommended for this project.
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Sandeepkumar004-hub/SmartDoc-AI.git
 cd SmartDoc-AI
 ```
 
-### 2. Create and activate a Python virtual environment
+### 2. Create and Activate a Python Virtual Environment
 
-On Windows PowerShell:
+On Windows:
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-### 3. Install backend dependencies
+If PowerShell blocks activation, use the Command Prompt activation script instead:
+
+```bat
+.venv\Scripts\activate.bat
+```
+
+### 3. Install Backend Dependencies
+
+With the virtual environment activated, run:
+
+```bash
+python -m pip install --upgrade pip
+pip install fastapi "uvicorn[standard]" python-multipart pymupdf rank-bm25 sentence-transformers numpy pytest httpx
+```
+
+The semantic embedding and cross-encoder models may download automatically the first time they are loaded. An internet connection may be required for the initial download.
+
+### 4. Start the Backend
 
 From the project root, run:
 
-```powershell
-python -m pip install fastapi "uvicorn[standard]" python-multipart pymupdf rank-bm25 sentence-transformers numpy pytest httpx
-```
-
-### 4. Start the backend
-
-```powershell
+```bash
 python -m uvicorn backend.main:app --reload
 ```
 
-The backend runs at `http://127.0.0.1:8000`.
+The backend will be available at:
 
-Interactive API documentation: `http://127.0.0.1:8000/docs`
+- API: http://127.0.0.1:8000
+- Interactive API documentation: http://127.0.0.1:8000/docs
+- Health check: http://127.0.0.1:8000/health
 
-Health check: `http://127.0.0.1:8000/health`
+Keep this terminal running.
 
-### 5. Install and start the frontend
+### 5. Start the Frontend
 
-Open a second terminal:
+Open a second terminal and run:
 
 ```powershell
 cd frontend
@@ -148,83 +170,155 @@ npm install
 npm run dev
 ```
 
-Open the local frontend URL printed in the terminal, usually `http://localhost:5173/`.
+Open the local URL shown by Vite, usually:
 
-### 6. Use the application
+http://localhost:5173
 
-1. Open the frontend in your browser.
-2. Select a PDF file and upload it.
-3. Enter a question or keywords related to the document.
-4. Review the ranked passages and their page numbers.
+You can now upload a PDF and search its contents.
 
-The first upload may take longer while the embedding and reranking models initialize or download.
+## API Endpoints
 
-## API Reference
+### Health Check
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/` | API welcome message |
-| GET | `/health` | Check backend health |
-| POST | `/upload` | Upload and index a PDF |
-| POST | `/search` | Retrieve and rerank document passages |
+`GET /health`
 
-### Example Search Request
+Returns the backend health status.
+
+Example response:
 
 ```json
 {
-  "query": "frontend web application development",
+  "status": "healthy"
+}
+```
+
+### Upload a PDF
+
+`POST /upload`
+
+Uploads a PDF, extracts its text, creates chunks, and builds the hybrid search index.
+
+The current implementation accepts PDF files up to 10 MB.
+
+Example response:
+
+```json
+{
+  "filename": "example.pdf",
+  "page_count": 5,
+  "chunk_count": 12,
+  "message": "PDF processed and hybrid index built successfully.",
+  "retrieval_method": "hybrid_bm25_semantic_rrf"
+}
+```
+
+### Search Documents
+
+`POST /search`
+
+Searches the currently indexed PDF using a natural-language query.
+
+Example request:
+
+```json
+{
+  "query": "What technologies are used for web development?",
   "top_k": 5
 }
 ```
 
-### Search Result Fields
+Example response structure:
 
-Search responses include:
-
-- `query`: submitted search query
-- `filename`: currently indexed PDF filename
-- `retrieval_method`: retrieval pipeline identifier
-- `result_count`: number of returned passages
-- `results`: ranked document chunks, including text, page and chunk identifiers, RRF score, and reranker score
-
-The `score` field represents the final reranker score. `rrf_score` preserves the hybrid retrieval score, and `rerank_score` contains the cross-encoder score.
-
-## Run Tests
-
-Activate the virtual environment and run the complete test suite from the project root:
-
-```powershell
-python -m pytest -v
+```json
+{
+  "query": "What technologies are used for web development?",
+  "filename": "example.pdf",
+  "retrieval_method": "hybrid_bm25_semantic_rrf",
+  "result_count": 1,
+  "results": [
+    {
+      "chunk_id": 1,
+      "page_number": 1,
+      "text": "Example text extracted from the PDF.",
+      "score": 0.85,
+      "rrf_score": 0.032
+    }
+  ]
+}
 ```
 
-**Current development status:** 34 automated tests passed in the local development environment.
+The response above is illustrative. Actual results and scores depend on the uploaded document and model predictions. The `score` field represents the cross-encoder reranking score in the current implementation; it is not a calibrated probability and can be negative.
+
+## Retrieval Evaluation
+
+SmartDoc AI includes a retrieval evaluation script that measures search quality using Recall@K and Mean Reciprocal Rank (MRR).
+
+### Current Results
+
+The current evaluation was run on a small synthetic dataset containing five queries and three sample document chunks.
+
+| Metric | Result |
+|---|---:|
+| Mean Recall@3 | 1.000 |
+| Mean Reciprocal Rank (MRR) | 1.000 |
+| Automated tests | 34 passed |
+
+### Run the Evaluation
+
+From the project root, with the virtual environment activated:
+
+```bash
+python -m backend.evaluate_retrieval
+```
+
+### Run Automated Tests
+
+```bash
+python -m pytest -q
+```
+
+The current test suite has passed all 34 tests.
+
+### Interpreting the Results
+
+Recall@3 measures the fraction of known relevant chunks retrieved among the top three results. MRR measures how highly the first relevant result is ranked across queries.
+
+These results demonstrate that the current implementation works well on the small, controlled evaluation dataset. They should not be interpreted as proof of production-level performance. A larger, independently reviewed dataset with varied queries and documents is needed for a more representative assessment.
 
 ## Current Limitations
 
-- The application supports one active PDF index at a time.
-- The document index is stored in memory and is cleared when the backend restarts.
-- Scanned PDFs without extractable text may require OCR.
-- The first model initialization requires internet access to download the models.
-- Retrieval quality depends on document content, chunking, query wording, and model behavior.
-- The project has been tested locally; production deployment and security hardening remain future work.
+- Only one PDF is indexed at a time.
+- The search index is stored in memory and is lost when the backend restarts.
+- Scanned PDFs without extractable text are not supported because OCR has not been implemented.
+- The embedding and reranking models may need to be downloaded on first use.
+- The evaluation dataset is small and synthetic.
+- The current application does not generate natural-language answers from retrieved passages; it returns ranked document chunks.
 
 ## Future Improvements
 
-- Support multiple PDFs and persistent document indexes.
-- Add OCR for scanned documents.
-- Add source citations and highlighted matching passages.
-- Evaluate retrieval quality using a labeled query dataset and ranking metrics.
-- Add authentication and access controls.
-- Deploy the frontend and backend for a public live demo.
-- Add monitoring and performance evaluation.
+- Support multiple documents and persistent indexes.
+- Add OCR for scanned PDFs.
+- Add larger and more diverse retrieval benchmarks.
+- Compare BM25, semantic search, hybrid retrieval, and reranking independently.
+- Add retrieval filters and document management.
+- Add source highlighting and improved result previews.
+- Introduce answer generation with citations using a Retrieval-Augmented Generation (RAG) pipeline.
+- Deploy the frontend and backend for public access.
+- Add continuous integration to run automated tests on each change.
+
+## Security and Privacy
+
+- Uploaded PDF files are processed by the backend and temporary upload files are removed after processing.
+- Do not commit private documents, resumes, credentials, API tokens, or other sensitive information to the repository.
+- The current implementation is a portfolio prototype and should be hardened before handling sensitive documents in production.
 
 ## Author
 
 **Sandeep Kumar**
 
 - GitHub: [Sandeepkumar004-hub](https://github.com/Sandeepkumar004-hub)
-- Project repository: [SmartDoc AI](https://github.com/Sandeepkumar004-hub/SmartDoc-AI)
+- Project Repository: [SmartDoc-AI](https://github.com/Sandeepkumar004-hub/SmartDoc-AI)
 
 ---
 
-*SmartDoc AI is a learning and portfolio project exploring PDF processing, semantic retrieval, hybrid search, and cross-encoder reranking.*
+If you find this project useful, consider starring the repository.
