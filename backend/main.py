@@ -1,4 +1,4 @@
-from backend.keyword_search import KeywordSearch
+﻿from backend.keyword_search import KeywordSearch
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -115,7 +115,7 @@ async def upload_pdf(file: UploadFile = File(...)):
             "page_count": len(pages),
             "chunk_count": len(chunks),
             "message": "PDF processed and hybrid index built successfully.",
-            "retrieval_method": "hybrid_bm25_semantic_rrf",
+            "retrieval_method": "hybrid_bm25_semantic_rrf_cross_encoder",
         }
 
     except HTTPException:
@@ -149,7 +149,8 @@ def search_documents(request: SearchRequest):
     return {
         "query": request.query,
         "filename": current_filename,
-        "retrieval_method": "hybrid_bm25_semantic_rrf",
+        "retrieval_method": "hybrid_bm25_semantic_rrf_cross_encoder",
         "result_count": len(results),
         "results": results,
     }
+
